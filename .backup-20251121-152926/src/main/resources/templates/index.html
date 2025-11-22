@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mongock Demo - Product Catalog</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            margin-bottom: 30px;
+        }
+        
+        h1 {
+            color: #667eea;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            color: #666;
+            font-size: 1.1em;
+        }
+        
+        .info-box {
+            background: #f0f7ff;
+            border-left: 4px solid #667eea;
+            padding: 15px;
+            margin-top: 20px;
+            border-radius: 4px;
+        }
+        
+        .info-box h3 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+        
+        .info-box ul {
+            margin-left: 20px;
+            color: #555;
+        }
+        
+        .filters {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        
+        .filters label {
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .filters select {
+            padding: 10px 15px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: border-color 0.3s;
+        }
+        
+        .filters select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .filters button {
+            padding: 10px 20px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        
+        .filters button:hover {
+            background: #5568d3;
+        }
+        
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+        }
+        
+        .product-card {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+        }
+        
+        .product-name {
+            font-size: 1.4em;
+            color: #333;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+        
+        .product-description {
+            color: #666;
+            margin-bottom: 15px;
+            line-height: 1.5;
+        }
+        
+        .product-price {
+            font-size: 1.8em;
+            color: #667eea;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        .product-category {
+            display: inline-block;
+            background: #f0f7ff;
+            color: #667eea;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        
+        .product-stock {
+            color: #666;
+            font-size: 0.9em;
+        }
+        
+        .stock-good {
+            color: #10b981;
+            font-weight: 600;
+        }
+        
+        .stock-low {
+            color: #f59e0b;
+            font-weight: 600;
+        }
+        
+        .no-products {
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            text-align: center;
+            color: #666;
+            font-size: 1.2em;
+        }
+        
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2em;
+            }
+            
+            .product-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚀 Mongock Demo Application</h1>
+            <p class="subtitle">Spring Boot + MongoDB + Mongock Migration Demo</p>
+            
+            <div class="info-box">
+                <h3>✨ What This Demo Shows:</h3>
+                <ul>
+                    <li><strong>Migration 001:</strong> Created initial products and indexes</li>
+                    <li><strong>Migration 002:</strong> Added more products to the catalog</li>
+                    <li><strong>Migration 003:</strong> Applied 10% discount to all Electronics</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="filters">
+            <label for="categoryFilter">Filter by Category:</label>
+            <select id="categoryFilter" onchange="filterByCategory()">
+                <option value="">All Categories</option>
+                <option th:each="cat : ${categories}" 
+                        th:value="${cat}" 
+                        th:text="${cat}"
+                        th:selected="${cat == selectedCategory}"></option>
+            </select>
+            <button onclick="window.location.href='/'">Reset</button>
+        </div>
+        
+        <div class="product-grid" th:if="${products != null and !products.isEmpty()}">
+            <div class="product-card" th:each="product : ${products}">
+                <div class="product-category" th:text="${product.category}">Category</div>
+                <div class="product-name" th:text="${product.name}">Product Name</div>
+                <div class="product-description" th:text="${product.description}">Description</div>
+                <div class="product-price" th:text="'$' + ${#numbers.formatDecimal(product.price, 1, 2)}">$0.00</div>
+                <div class="product-stock">
+                    Stock: 
+                    <span th:class="${product.stockQuantity > 20 ? 'stock-good' : 'stock-low'}" 
+                          th:text="${product.stockQuantity + ' units'}">0 units</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="no-products" th:if="${products == null or products.isEmpty()}">
+            <p>No products found. Make sure MongoDB is running and migrations have executed.</p>
+        </div>
+    </div>
+    
+    <script>
+        function filterByCategory() {
+            const category = document.getElementById('categoryFilter').value;
+            if (category) {
+                window.location.href = '/?category=' + encodeURIComponent(category);
+            } else {
+                window.location.href = '/';
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,13 +1,29 @@
 # 🚀 Mongock Schema Validation - Quick Reference
 
-## Update Existing Demo
+#Quick Start
 
+#Start MongoDB:
 ```bash
-cd mongock-demo
-chmod +x update-demo.sh
-./update-demo.sh
+docker run -d -p 27017:27017 --name mongodb mongo:latest --noauth
+```
+
+#Build and run:
+```bash
+mvn clean install
 mvn spring-boot:run
 ```
+
+#Access the application:
+Web UI: http://localhost:8080
+REST API: http://localhost:8080/api/products
+
+## Update Existing Demo - Ignore These Comments 
+##```bash
+##cd mongock-demo
+##chmod +x update-demo.sh
+##./update-demo.sh
+##mvn spring-boot:run
+##```
 
 ## Access Points
 
